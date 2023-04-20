@@ -56,7 +56,7 @@ To get this deploy you will use the `deployIt.sh` script and do the following:
 Now let's see if it works. Execute the following (substitute with your own cloud-run 
 suffix:
 ```bash
-curl -i https://caller-service-hbjrsnqtmq-ew.a.run.app/callservice/simple-service -H "Authorization: Bearer $(gcloud auth print-identity-token)"
+curl -i https://caller-service-suffix/callservice/simple-service -H "Authorization: Bearer $(gcloud auth print-identity-token)"
 ```
 
 You should see traffic on the remote service.
