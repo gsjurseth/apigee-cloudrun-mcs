@@ -5,7 +5,7 @@ info:
   description: |
     An API for the caller service that will call other services in Cloud Run
 servers: 
-  - url: https://caller-service-hbjrsnqtmq-ew.a.run.app
+  - url: https://caller-service-hbjrsnqtmq-ew.a.run.app/
 security:
   - ApiKeyAuth: []  
   
