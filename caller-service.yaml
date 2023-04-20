@@ -1,0 +1,30 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  annotations:
+  labels:
+    cloud.googleapis.com/location: europe-west1
+  name: caller-service
+spec:
+  template:
+    metadata:
+      annotations:
+        run.googleapis.com/execution-environment: gen1 #or gen2
+        run.googleapis.com/vpc-access-connector: cr-vpc-connector
+    spec:
+      containers:
+      - env:
+        - name: DEBUG
+          value: DEBUG
+        - name: SERVICE_SCHEME
+          value: "https"
+        - name: SERVICE_SUFFIX
+          value: "-hbjrsnqtmq-ew.a.run.app"
+        - name: SERVICE_PORT
+          value: "443"
+        - name: SERVICE_KEY
+          value: "ijsvyc8pQGiZwQX4TfbWRfMEDmjOPTwU9RXO8f5zlpxL5RoS"
+        image: gcr.io/apigee-product-demo/anothersimple-service:latest
+        ports:
+        - containerPort: 8000
+          name: http1

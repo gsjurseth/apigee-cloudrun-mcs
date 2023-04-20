@@ -1,0 +1,76 @@
+openapi: 3.0.3
+info:
+  version: 0.0.1
+  title: Caller Service
+  description: |
+    An API for the caller service that will call other services in Cloud Run
+servers: 
+  - url: https://caller-service-hbjrsnqtmq-ew.a.run.app
+security:
+  - ApiKeyAuth: []  
+  
+x-google-ratelimit: 
+  - name: caller-service
+    rate-literal: 10pm
+    identifier-ref: request.url
+    
+paths:
+  '/':
+    get:
+      summary: 'Hello World call'
+      description: |
+        Simply returns hello world
+      # This is an array of GET operation parameters:
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+  '/callservice/{service}':
+    get:
+      description: 'Call the named service on `/foo` and send back the response'
+      parameters:
+        - name: service
+          in: path
+          description: |
+            Unique service name of service deployed to Cloud Run
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '503':
+          description: 'Service is starting up'
+  '/callhttpbin':
+    get:
+      description: 'Call /post on httpbin and spit back the what is returned'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '503':
+          description: 'Service is starting up'
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+  schemas:
+    Message:
+      title: Message
+      type: object
+      properties:
+        message:
+          description: The message
+          type: string

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+echo "updating config for envoy adapter to $ENVOY_ADAPTER_ADDRESS"
+#cp /etc/envoy/envoy.yaml /tmp
+sed -i -e "s/@@ENVOY_ADAPTER_ADDRESS@@/$ENVOY_ADAPTER_ADDRESS/" /sidecar/envoy.yaml
+sed -i -e "s/@@ENVOY_ADAPTER_PORT@@/$ENVOY_ADAPTER_PORT/" /sidecar/envoy.yaml
+sed -i -e "s/@@BACKEND@@/$BACKEND/" /sidecar/envoy.yaml
+sed -i -e "s/@@TARGET_NAME@@/$TARGET_NAME/" /sidecar/envoy.yaml
+
+echo "Last part of envoy config..."
+
+tail -50 /sidecar/envoy.yaml | head -20
+envoy -c /sidecar/envoy.yaml -l $LOG_LEVEL

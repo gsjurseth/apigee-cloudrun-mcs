@@ -1,0 +1,39 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  annotations: 
+     run.googleapis.com/launch-stage: ALPHA
+  labels:
+    cloud.googleapis.com/location: europe-west1
+  name: simple-service
+spec:
+  template:
+    metadata:
+      annotations:
+        run.googleapis.com/execution-environment: gen1 #or gen2
+        run.googleapis.com/vpc-access-connector: cr-vpc-connector
+    spec:
+      serviceAccountName: cloudrun-sa@apigee-product-demo.iam.gserviceaccount.com
+      containers:
+      - env:
+        - name: DEBUG
+          value: DEBUG
+        image: gcr.io/apigee-product-demo/envoy_adapter:latest
+      - env:
+        - name: TARGET_NAME
+          value: "simple-service"
+        image: gcr.io/apigee-product-demo/simple-service:latest
+      - env:
+        - name: LOG_LEVEL
+          value: info
+        - name: BACKEND
+          value: localhost
+        - name: ENVOY_ADAPTER_PORT
+          value: "5000"
+        - name: ENVOY_ADAPTER_ADDRESS
+          value: "localhost"
+        - name: TARGET_NAME
+          value: "simple-service"
+        image: gcr.io/apigee-product-demo/envoy-sidecar:latest
+        ports:
+          - containerPort: 8080

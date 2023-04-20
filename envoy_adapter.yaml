@@ -1,0 +1,22 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  annotations:
+  labels:
+    cloud.googleapis.com/location: europe-west1
+  name: envoy-adapter
+spec:
+  template:
+    metadata:
+      annotations:
+        run.googleapis.com/execution-environment: gen1 #or gen2
+        run.googleapis.com/vpc-access-connector: mongo-vpc-connector
+    spec:
+      containers:
+      - env:
+        - name: DEBUG
+          value: DEBUG
+        image: gcr.io/apigee-product-demo/envoy_adapter:latest
+        ports:
+        - containerPort: 5000
+          name: h2c

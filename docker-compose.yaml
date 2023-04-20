@@ -1,0 +1,56 @@
+version: '3.7'
+services:
+
+  service.local:
+    image: gcr.io/apigee-product-demo/simple-service:latest
+    networks:
+      - envoymesh
+    ports:
+      - "8000:8000"
+    expose:
+      - "8000"
+
+  anotherservice.local:
+    image: gcr.io/apigee-product-demo/anothersimple-service:latest
+    networks:
+      - envoymesh
+    environment:
+      PORT: 8090
+      SERVICE_HOST: "envoy.local"
+      SERVICE_PORT: 8080
+      SERVICE_KEY: "ijsvyc8pQGiZwQX4TfbWRfMEDmjOPTwU9RXO8f5zlpxL5RoS"
+    ports:
+      - "8090:8090"
+    expose:
+      - "8090"
+
+  envoy.local:
+    image: gcr.io/apigee-product-demo/envoy-sidecar:latest
+    networks:
+      - envoymesh
+    environment:
+      ENVOY_ADAPTER_ADDRESS: "envoy_adapter.local" # "envoy-adapter-hbjrsnqtmq-ew.a.run.app"
+      ENVOY_ADAPTER_PORT: 5000
+      BACKEND: "service.local"
+      TARGET_NAME: "techconrocks"
+      LOG_LEVEL: "info"
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+
+  envoy_adapter.local:
+    image: gcr.io/apigee-product-demo/envoy_adapter:latest
+    environment:
+      DEBUG: "debug"
+    networks:
+      - envoymesh
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    expose:
+      - "5000"
+      - "5001"
+
+networks:
+  envoymesh: {}
